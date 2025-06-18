@@ -1,0 +1,5 @@
+com\sunelection\service\AuthServiceTest.class
+com\sunelection\service\VoteServiceTest.class
+com\sunelection\service\AuditServiceTest.class
+com\sunelection\service\BackupServiceTest.class
+com\sunelection\service\RestoreServiceTest.class
