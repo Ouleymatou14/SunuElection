@@ -1,0 +1,106 @@
+/* SunuElection Theme Palette */
+:root {
+    /* Override Bootstrap primary color if using v5 custom properties */
+    --bs-primary: #6f42c1;
+    --sunuelection-primary: #6f42c1;
+    --sunuelection-primary-dark: #59309c;
+    --sunuelection-primary-light: #e9d8fd;
+}
+
+/* Layout */
+body {
+    background: linear-gradient(90deg, var(--sunuelection-primary-light) 0%, #ffffff 70%);
+}
+
+/* Generic elements */
+.btn-primary,
+.nav-pills .nav-link.active,
+.nav-tabs .nav-link.active,
+.badge.bg-primary {
+    background-color: var(--sunuelection-primary) !important;
+    border-color: var(--sunuelection-primary) !important;
+    color: #fff !important;
+}
+
+.btn-primary:hover,
+.nav-pills .nav-link.active:hover,
+.nav-tabs .nav-link.active:hover {
+    background-color: var(--sunuelection-primary-dark) !important;
+    border-color: var(--sunuelection-primary-dark) !important;
+}
+
+.sidebar {
+    background-color: var(--sunuelection-primary) !important;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:focus,
+.sidebar .nav-link:active {
+    background-color: var(--sunuelection-primary-dark) !important;
+    color:#fff !important;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--sunuelection-primary-dark) !important;
+    color:#fff !important;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--sunuelection-primary) !important;
+    color:#fff !important;
+}
+
+.sidebar a:hover {
+    color: #d6d6d6 !important;
+}
+
+.progress-bar {
+    background-color: var(--sunuelection-primary) !important;
+}
+
+/* Data panels */
+.card,
+.table-striped>tbody>tr:nth-of-type(odd),
+.table-striped>tbody>tr:nth-of-type(even) {
+    background-color: var(--sunuelection-primary-light) !important;
+}
+
+/* Form selects */
+select option:checked,
+select option:hover,
+select option:focus,
+select option:active {
+    background-color: var(--sunuelection-primary) !important;
+    color:#fff !important;
+}
+
+.form-select:focus {
+    border-color: var(--sunuelection-primary) !important;
+    box-shadow: 0 0 0 .25rem rgba(111,66,193,.25) !important;
+}
+.form-select option:checked,
+.form-select option:hover,
+.form-select option:focus,
+.form-select option:active {
+    background-color: var(--sunuelection-primary) !important;
+    color:#fff !important;
+}
+
+/* bg-primary utilitaire */
+.bg-primary {
+    background-color: var(--sunuelection-primary) !important;
+    color:#fff !important;
+}
+
+/* Nav hover */
+.nav-pills .nav-link:hover,
+.nav-tabs .nav-link:hover {
+    background-color: var(--sunuelection-primary-dark) !important;
+    color:#fff !important;
+}
+
+/* Links */
+a {
+    color: var(--sunuelection-primary);
+}
+a:hover { color: var(--sunuelection-primary-dark); }

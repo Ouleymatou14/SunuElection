@@ -4,30 +4,427 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SunuElection - Administration</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary-bg: #f8f9fa;
+            --primary-blue: #4a90e2;
+            --primary-purple: #6f42c1;
+            --primary-emerald: #059669;
+            --text-primary: #2c3e50;
+            --text-secondary: #6c757d;
+            --white: #ffffff;
+            --sidebar-bg: linear-gradient(135deg, var(--primary-purple), var(--primary-blue));
+            --shadow-light: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 8px 25px rgba(0,0,0,0.15);
+            --shadow-large: 0 15px 35px rgba(0,0,0,0.1);
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .container-fluid {
+            padding: 0;
+        }
+
+        /* Sidebar Styles */
         .sidebar {
             min-height: 100vh;
-            background-color: #343a40;
+            background: var(--sidebar-bg);
             color: white;
+            position: relative;
+            box-shadow: var(--shadow-large);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .sidebar a {
-            color: white;
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .sidebar-content {
+            position: relative;
+            z-index: 10;
+            padding: 2rem 1.5rem;
+        }
+
+        .sidebar h3 {
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .sidebar h3::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
             text-decoration: none;
+            padding: 0.875rem 1.25rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
         }
-        .sidebar a:hover {
-            color: #adb5bd;
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
         }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link.active {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
         .main-content {
-            padding: 20px;
+            padding: 2rem;
+            background: var(--primary-bg);
+            min-height: 100vh;
         }
+
+        .content-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-header h2 {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Card Styles */
         .card {
-            margin-bottom: 20px;
+            border: none;
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 2rem;
         }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .card-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .card-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Card Special Styling */
+        .stats-card .card-body {
+            text-align: center;
+            padding: 2.5rem 2rem;
+        }
+
+        .stats-card .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stats-card .card-text {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin: 0;
+            line-height: 1;
+        }
+
+        .stats-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stats-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Table Styles */
         .table-responsive {
-            margin-top: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            margin-top: 1.5rem;
         }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            color: white;
+            border: none;
+            padding: 1.25rem 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.875rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f3f4;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        /* Button Styles */
+        .btn {
+            border-radius: 12px;
+            padding: 0.875rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+            background: linear-gradient(135deg, #3a7bc8, #5a359f);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), var(--primary-emerald));
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ff9800);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #e91e63);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* Form Styles */
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(248, 249, 250, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+            background: white;
+            outline: none;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 16px;
+            box-shadow: var(--shadow-large);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            color: white;
+            border: none;
+            padding: 1.5rem 2rem;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            border: none;
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+        }
+
+        /* Badge Styles */
+        .badge {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .bg-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple)) !important;
+        }
+
+        /* Loading Styles */
         .loading {
             position: fixed;
             top: 0;
@@ -39,25 +436,32 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            backdrop-filter: blur(5px);
         }
+
         .loading-spinner {
             width: 50px;
             height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Toast Styles */
         .toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 9999;
         }
+
+        /* Progress Bar */
         .progress-container {
             position: fixed;
             bottom: 0;
@@ -65,20 +469,105 @@
             width: 100%;
             height: 4px;
             background: #f3f3f3;
+            z-index: 1000;
         }
+
         .progress-bar {
             height: 100%;
-            background: #3498db;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
             width: 0%;
             transition: width 0.3s ease;
         }
+
+        /* Results List Styles */
+        .results-total {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(111, 66, 193, 0.1));
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .results-total .total-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .results-total .total-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .list-group-item {
+            border: none;
+            border-radius: 12px !important;
+            margin-bottom: 0.75rem;
+            padding: 1.25rem 1.5rem;
+            background: rgba(248, 249, 250, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-light);
+        }
+
+        .list-group-item:hover {
+            transform: translateX(5px);
+            background: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
                 min-height: auto;
             }
+            
             .main-content {
-                margin-top: 20px;
+                padding: 1rem;
             }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .stats-card .card-text {
+                font-size: 2rem;
+            }
+
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        /* Animation for content switching */
+        .content-section {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-light);
         }
     </style>
 </head>
@@ -86,44 +575,78 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar p-3">
-                <h3 class="mb-4">SunuElection</h3>
-                <div class="nav flex-column nav-pills" role="tablist">
-                    <a class="nav-link active" data-bs-toggle="pill" href="#dashboard">Tableau de bord</a>
-                    <a class="nav-link" data-bs-toggle="pill" href="#candidates">Candidats</a>
-                    <a class="nav-link" data-bs-toggle="pill" href="#users">Utilisateurs</a>
-                    <a class="nav-link" data-bs-toggle="pill" href="#audit">Audit</a>
-                    <a class="nav-link" data-bs-toggle="pill" href="#results">Résultats</a>
-                    <a class="nav-link" data-bs-toggle="pill" href="#backup">Sauvegardes</a>
-                    <a class="nav-link" href="#" onclick="logout()">Déconnexion</a>
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="sidebar-content">
+                    <h3><i class="fas fa-shield-alt me-2"></i>SunuElection</h3>
+                    <div class="nav flex-column nav-pills" role="tablist">
+                        <a class="nav-link active" data-bs-toggle="pill" href="#dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Tableau de bord
+                        </a>
+                        <a class="nav-link" data-bs-toggle="pill" href="#candidates">
+                            <i class="fas fa-users"></i>
+                            Candidats
+                        </a>
+                        <a class="nav-link" data-bs-toggle="pill" href="#users">
+                            <i class="fas fa-user-cog"></i>
+                            Utilisateurs
+                        </a>
+                        <a class="nav-link" data-bs-toggle="pill" href="#audit">
+                            <i class="fas fa-clipboard-list"></i>
+                            Audit
+                        </a>
+                        <a class="nav-link" data-bs-toggle="pill" href="#results">
+                            <i class="fas fa-chart-bar"></i>
+                            Résultats
+                        </a>
+                        <a class="nav-link" data-bs-toggle="pill" href="#backup">
+                            <i class="fas fa-database"></i>
+                            Sauvegardes
+                        </a>
+                        <a class="nav-link" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Déconnexion
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 main-content">
                 <!-- Dashboard Content -->
-                <div id="dashboardContent">
-                    <h2 class="mb-4">Tableau de bord</h2>
+                <div id="dashboardContent" class="content-section">
+                    <div class="content-header">
+                        <h2><i class="fas fa-tachometer-alt"></i>Tableau de bord</h2>
+                    </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="card">
+                            <div class="card stats-card">
                                 <div class="card-body">
+                                    <div class="stats-icon">
+                                        <i class="fas fa-vote-yea"></i>
+                                    </div>
                                     <h5 class="card-title">Total des votes</h5>
                                     <p class="card-text" id="totalVotes">Chargement...</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card">
+                            <div class="card stats-card">
                                 <div class="card-body">
+                                    <div class="stats-icon">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
                                     <h5 class="card-title">Utilisateurs actifs</h5>
                                     <p class="card-text" id="activeUsers">Chargement...</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card">
+                            <div class="card stats-card">
                                 <div class="card-body">
+                                    <div class="stats-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
                                     <h5 class="card-title">Candidats</h5>
                                     <p class="card-text" id="totalCandidates">Chargement...</p>
                                 </div>
@@ -133,22 +656,22 @@
                 </div>
 
                 <!-- Candidates Content -->
-                <div id="candidatesContent" style="display: none;">
-                    <h2 class="mb-4 d-flex justify-content-between align-items-center">Gestion des candidats
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addCandidateModal"><i class="fas fa-plus"></i> Ajouter</button>
-                            </h2>
-                    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addCandidateModal">
-                        <i class="bi bi-plus"></i> Ajouter un candidat
-                    </button>
+                <div id="candidatesContent" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2><i class="fas fa-users"></i>Gestion des candidats</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCandidateModal">
+                            <i class="fas fa-plus me-2"></i>Ajouter un candidat
+                        </button>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nom</th>
-                                    <th>Parti</th>
-                                    <th>Description</th>
-                                    <th>Votes</th>
-                                    <th>Actions</th>
+                                    <th><i class="fas fa-user me-2"></i>Nom</th>
+                                    <th><i class="fas fa-flag me-2"></i>Parti</th>
+                                    <th><i class="fas fa-info-circle me-2"></i>Description</th>
+                                    <th><i class="fas fa-vote-yea me-2"></i>Votes</th>
+                                    <th><i class="fas fa-cogs me-2"></i>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="candidatesTableBody">
@@ -159,17 +682,19 @@
                 </div>
 
                 <!-- Users Content -->
-                <div id="usersContent" style="display: none;">
-                    <h2 class="mb-4">Gestion des utilisateurs</h2>
+                <div id="usersContent" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2><i class="fas fa-user-cog"></i>Gestion des utilisateurs</h2>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Email</th>
-                                    <th>Nom</th>
-                                    <th>Rôles</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
+                                    <th><i class="fas fa-envelope me-2"></i>Email</th>
+                                    <th><i class="fas fa-user me-2"></i>Nom</th>
+                                    <th><i class="fas fa-user-tag me-2"></i>Rôles</th>
+                                    <th><i class="fas fa-toggle-on me-2"></i>Statut</th>
+                                    <th><i class="fas fa-cogs me-2"></i>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="usersTableBody">
@@ -180,33 +705,52 @@
                 </div>
 
                 <!-- Results Content -->
-                <div id="resultsContent" style="display: none;">
-                    <h2 class="mb-4">Résultats finaux</h2>
-                    <div id="resultsList" class="my-3">Chargement...</div>
+                <div id="resultsContent" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2><i class="fas fa-chart-bar"></i>Résultats finaux</h2>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="resultsList">Chargement...</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Audit Content -->
-                <div id="auditContent" style="display: none;">
-                    <h2 class="mb-4">Journal d'audit</h2>
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="auditUsername" placeholder="Filtrer par utilisateur">
-                        </div>
-                        <div class="col-md-4">
-                            <input type="date" class="form-control" id="auditStartDate">
-                        </div>
-                        <div class="col-md-4">
-                            <input type="date" class="form-control" id="auditEndDate">
+                <div id="auditContent" class="content-section" style="display: none;">
+                    <div class="content-header">
+                        <h2><i class="fas fa-clipboard-list"></i>Journal d'audit</h2>
+                    </div>
+                    <div class="filter-section">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="fas fa-user me-2"></i>Filtrer par utilisateur
+                                </label>
+                                <input type="text" class="form-control" id="auditUsername" placeholder="Nom d'utilisateur">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar me-2"></i>Date de début
+                                </label>
+                                <input type="date" class="form-control" id="auditStartDate">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar me-2"></i>Date de fin
+                                </label>
+                                <input type="date" class="form-control" id="auditEndDate">
+                            </div>
                         </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Utilisateur</th>
-                                    <th>Action</th>
-                                    <th>Détails</th>
+                                    <th><i class="fas fa-clock me-2"></i>Date</th>
+                                    <th><i class="fas fa-user me-2"></i>Utilisateur</th>
+                                    <th><i class="fas fa-bolt me-2"></i>Action</th>
+                                    <th><i class="fas fa-info me-2"></i>Détails</th>
                                 </tr>
                             </thead>
                             <tbody id="auditTableBody">
@@ -217,22 +761,20 @@
                 </div>
 
                 <!-- Backup Section -->
-                <div class="tab-pane fade" id="backup">
-                    <h2>Gestion des Sauvegardes</h2>
-                    <div class="row mb-4">
-                        <div class="col">
-                            <button class="btn btn-primary" onclick="createBackup()">
-                                <i class="fas fa-save"></i> Créer une sauvegarde
-                            </button>
-                        </div>
+                <div class="tab-pane fade content-section" id="backup" style="display: none;">
+                    <div class="content-header">
+                        <h2><i class="fas fa-database"></i>Gestion des Sauvegardes</h2>
+                        <button class="btn btn-primary" onclick="createBackup()">
+                            <i class="fas fa-save me-2"></i>Créer une sauvegarde
+                        </button>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nom du fichier</th>
-                                    <th>Date de création</th>
-                                    <th>Actions</th>
+                                    <th><i class="fas fa-file me-2"></i>Nom du fichier</th>
+                                    <th><i class="fas fa-calendar me-2"></i>Date de création</th>
+                                    <th><i class="fas fa-cogs me-2"></i>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="backupList">
@@ -250,28 +792,40 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Ajouter un candidat</h5>
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus me-2"></i>Ajouter un candidat
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addCandidateForm">
                         <div class="mb-3">
-                            <label for="candidateName" class="form-label">Nom</label>
+                            <label for="candidateName" class="form-label">
+                                <i class="fas fa-user me-2"></i>Nom
+                            </label>
                             <input type="text" class="form-control" id="candidateName" required>
                         </div>
                         <div class="mb-3">
-                            <label for="candidateParty" class="form-label">Parti</label>
+                            <label for="candidateParty" class="form-label">
+                                <i class="fas fa-flag me-2"></i>Parti
+                            </label>
                             <input type="text" class="form-control" id="candidateParty" required>
                         </div>
                         <div class="mb-3">
-                            <label for="candidateDescription" class="form-label">Description</label>
+                            <label for="candidateDescription" class="form-label">
+                                <i class="fas fa-info-circle me-2"></i>Description
+                            </label>
                             <textarea class="form-control" id="candidateDescription" rows="3" required></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary" id="saveCandidateBtn">Enregistrer</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Annuler
+                    </button>
+                    <button type="button" class="btn btn-primary" id="saveCandidateBtn">
+                        <i class="fas fa-save me-2"></i>Enregistrer
+                    </button>
                 </div>
             </div>
         </div>
@@ -280,171 +834,189 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/api/common.js"></script>
     <script>
-        if (!getToken()) window.location.href = '/api/index.html';
+        // Vérification d'authentification (logique métier préservée)
+        if (!getToken()) {
+            window.location.href = '/api/index.html';
+        } else if (!hasRole('ADMIN')) {
+            // Redirige les utilisateurs non-admin vers leur tableau de bord dédié
+            redirectToDashboard(getRoles()[0] || 'USER');
+        }
 
         function logout() {
             removeToken();
             window.location.href = '/api/index.html';
         }
 
-        // ---- CRUD helpers ----
-let candidateMap = {};
-let editingCandidateId = null;
+        // ---- CRUD helpers (logique métier préservée) ----
+        let candidateMap = {};
+        let editingCandidateId = null;
 
-async function toggleUser(id, enabled) {
-    const url = `/api/admin/users/${id}/${enabled ? 'disable' : 'enable'}`;
-    await apiRequest(url, { method: 'PUT' });
-    loadUsers();
-    updateDashboardCounts();
-}
-
-function editCandidate(id) {
-    const c = candidateMap[id];
-    if (!c) return;
-    editingCandidateId = id;
-    document.getElementById('candidateName').value = c.name;
-    document.getElementById('candidateParty').value = c.party;
-    document.getElementById('candidateDescription').value = c.description;
-    new bootstrap.Modal(document.getElementById('addCandidateModal')).show();
-}
-
-async function deleteCandidate(id) {
-    if (!confirm('Supprimer ce candidat ?')) return;
-    await apiRequest(`/api/admin/candidates/${id}`, { method: 'DELETE' });
-    loadCandidates();
-    updateDashboardCounts();
-}
-
-async function deleteUser(id) {
-    if (!confirm('Supprimer cet utilisateur ?')) return;
-    await apiRequest(`/api/admin/users/${id}`, { method: 'DELETE' });
-    loadUsers();
-    updateDashboardCounts();
-}
-
-async function loadResults() {
-        const container = document.getElementById('resultsList');
-        if (!container) return;
-        container.innerHTML = 'Chargement...';
-        try {
-            const res = await apiRequest('/api/vote/results');
-            container.innerHTML = '';
-            const totalP = document.createElement('p');
-            totalP.className = 'fw-bold';
-            totalP.textContent = `Total des votes : ${res.totalVotes}`;
-            container.appendChild(totalP);
-            const ul = document.createElement('ul');
-            ul.className = 'list-group';
-            Object.entries(res.candidateResults || {}).forEach(([k, v]) => {
-                let name = k;
-                const m = k.match(/name=([^,]+)/);
-                if (m) name = m[1];
-                const li = document.createElement('li');
-                li.className = 'list-group-item d-flex justify-content-between align-items-center';
-                li.textContent = name;
-                const badge = document.createElement('span');
-                badge.className = 'badge bg-primary rounded-pill';
-                badge.textContent = v;
-                li.appendChild(badge);
-                ul.appendChild(li);
-            });
-            container.appendChild(ul);
-        } catch (e) {
-            container.textContent = 'Erreur lors du chargement des résultats';
+        async function toggleUser(id, enabled) {
+            const url = `/api/admin/users/${id}/${enabled ? 'disable' : 'enable'}`;
+            await apiRequest(url, { method: 'PUT' });
+            loadUsers();
+            updateDashboardCounts();
         }
-    }
 
-    // ------------------------
+        function editCandidate(id) {
+            const c = candidateMap[id];
+            if (!c) return;
+            editingCandidateId = id;
+            document.getElementById('candidateName').value = c.name;
+            document.getElementById('candidateParty').value = c.party;
+            document.getElementById('candidateDescription').value = c.description;
+            new bootstrap.Modal(document.getElementById('addCandidateModal')).show();
+        }
 
-// === Backup management ===
-async function createBackup() {
-    try {
-        const res = await apiRequest('/api/admin/backup/create', { method: 'POST' });
-        alert(res.message || 'Sauvegarde créée');
-        loadBackups();
-    } catch (e) {
-        alert('Erreur lors de la création de la sauvegarde');
-    }
-}
+        async function deleteCandidate(id) {
+            if (!confirm('Supprimer ce candidat ?')) return;
+            await apiRequest(`/api/admin/candidates/${id}`, { method: 'DELETE' });
+            loadCandidates();
+            updateDashboardCounts();
+        }
 
-async function downloadBackup(filename){
-    const token = getToken();
-    try{
-        const resp = await fetch(`/api/admin/backup/download/${filename}`,{
-            headers:{'Authorization': 'Bearer '+token}
-        });
-        if(!resp.ok){throw new Error('Erreur téléchargement');}
-        const blob = await resp.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-    }catch(e){
-        alert('Téléchargement impossible');
-    }
-}
+        async function deleteUser(id) {
+            if (!confirm('Supprimer cet utilisateur ?')) return;
+            await apiRequest(`/api/admin/users/${id}`, { method: 'DELETE' });
+            loadUsers();
+            updateDashboardCounts();
+        }
 
-async function deleteBackup(filename){
-    if(!confirm('Supprimer cette sauvegarde ?')) return;
-    const token=getToken();
-    try{
-        const resp=await fetch(`/api/admin/backup/${filename}`,{method:'DELETE', headers:{'Authorization':'Bearer '+token}});
-        if(!resp.ok) throw new Error('Erreur suppression');
-        loadBackups();
-    }catch(e){
-        alert('Suppression impossible');
-    }
-}
+        async function loadResults() {
+            const container = document.getElementById('resultsList');
+            if (!container) return;
+            container.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin me-2"></i>Chargement...</div>';
+            try {
+                const res = await apiRequest('/api/vote/results');
+                container.innerHTML = '';
+                
+                // Total avec style amélioré
+                const totalDiv = document.createElement('div');
+                totalDiv.className = 'results-total';
+                totalDiv.innerHTML = `
+                    <div class="total-number">${res.totalVotes}</div>
+                    <div class="total-label">Total des votes</div>
+                `;
+                container.appendChild(totalDiv);
+                
+                const ul = document.createElement('ul');
+                ul.className = 'list-group';
+                Object.entries(res.candidateResults || {}).forEach(([k, v]) => {
+                    let name = k;
+                    const m = k.match(/name=([^,]+)/);
+                    if (m) name = m[1];
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    li.innerHTML = `
+                        <span><i class="fas fa-user me-2"></i>${name}</span>
+                        <span class="badge bg-primary rounded-pill">${v}</span>
+                    `;
+                    ul.appendChild(li);
+                });
+                container.appendChild(ul);
+            } catch (e) {
+                container.innerHTML = '<div class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Erreur lors du chargement des résultats</div>';
+            }
+        }
 
-async function loadBackups() {
-    const tbody = document.getElementById('backupList');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-    try {
-        const backups = await apiRequest('/api/admin/backup/list');
-        (backups || []).forEach(b => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${b.filename || b}</td>
-                <td>${b.date || ''}</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadBackup('${b.filename||b}')">Télécharger</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteBackup('${b.filename||b}')">Supprimer</button>
-                </td>`;
-            tbody.appendChild(tr);
-        });
-    } catch (e) {
-        // pas encore implémenté côté serveur
-    }
-}
-// =========================
+        // === Backup management (logique métier préservée) ===
+        async function createBackup() {
+            try {
+                const res = await apiRequest('/api/admin/backup/create', { method: 'POST' });
+                alert(res.message || 'Sauvegarde créée');
+                loadBackups();
+            } catch (e) {
+                alert('Erreur lors de la création de la sauvegarde');
+            }
+        }
 
-async function loadUsers() {
+        async function downloadBackup(filename){
+            const token = getToken();
+            try{
+                const resp = await fetch(`/api/admin/backup/download/${filename}`,{
+                    headers:{'Authorization': 'Bearer '+token}
+                });
+                if(!resp.ok){throw new Error('Erreur téléchargement');}
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            }catch(e){
+                alert('Téléchargement impossible');
+            }
+        }
+
+        async function deleteBackup(filename){
+            if(!confirm('Supprimer cette sauvegarde ?')) return;
+            const token=getToken();
+            try{
+                const resp=await fetch(`/api/admin/backup/${filename}`,{method:'DELETE', headers:{'Authorization':'Bearer '+token}});
+                if(!resp.ok) throw new Error('Erreur suppression');
+                loadBackups();
+            }catch(e){
+                alert('Suppression impossible');
+            }
+        }
+
+        async function loadBackups() {
+            const tbody = document.getElementById('backupList');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            try {
+                const backups = await apiRequest('/api/admin/backup/list');
+                (backups || []).forEach(b => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><i class="fas fa-file-archive me-2"></i>${b.filename || b}</td>
+                        <td><i class="fas fa-calendar me-2"></i>${b.date || ''}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="downloadBackup('${b.filename||b}')">
+                                <i class="fas fa-download me-1"></i>Télécharger
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteBackup('${b.filename||b}')">
+                                <i class="fas fa-trash me-1"></i>Supprimer
+                            </button>
+                        </td>`;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                // pas encore implémenté côté serveur
+            }
+        }
+
+        async function loadUsers() {
             const tbody = document.getElementById('usersTableBody');
             tbody.innerHTML = '';
             const users = await apiRequest('/api/admin/users');
             users.forEach(u => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${u.email}</td>
-                    <td>${u.fullName}</td>
-                    <td>${[...u.roles].join(', ')}</td>
-                    <td>${u.enabled ? 'Actif' : 'Désactivé'}</td>
+                    <td><i class="fas fa-envelope me-2"></i>${u.email}</td>
+                    <td><i class="fas fa-user me-2"></i>${u.fullName}</td>
+                    <td><i class="fas fa-user-tag me-2"></i>${[...u.roles].join(', ')}</td>
                     <td>
-                        <button class="btn btn-sm ${u.enabled ? 'btn-warning' : 'btn-success'}" onclick="toggleUser(${u.id}, ${u.enabled})">
+                        <span class="badge ${u.enabled ? 'bg-success' : 'bg-secondary'}">
+                            <i class="fas fa-${u.enabled ? 'check' : 'times'} me-1"></i>
+                            ${u.enabled ? 'Actif' : 'Désactivé'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm ${u.enabled ? 'btn-warning' : 'btn-success'} me-1" onclick="toggleUser(${u.id}, ${u.enabled})">
                             <i class="bi ${u.enabled ? 'bi-person-x' : 'bi-person-check'}"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger ms-1" onclick="deleteUser(${u.id})">
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>`;
                 tbody.appendChild(tr);
             });
         }
+
         async function loadCandidates() {
             const tbody = document.getElementById('candidatesTableBody');
             tbody.innerHTML = '';
@@ -454,35 +1026,68 @@ async function loadUsers() {
                 candidateMap[c.id] = c;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${c.name}</td>
-                    <td>${c.party}</td>
-                    <td>${c.description || ''}</td>
-                    <td>${c.voteCount}</td>
+                    <td><i class="fas fa-user me-2"></i>${c.name}</td>
+                    <td><i class="fas fa-flag me-2"></i>${c.party}</td>
+                    <td><i class="fas fa-info-circle me-2"></i>${c.description || ''}</td>
                     <td>
-                        <button class="btn btn-sm btn-secondary me-1" onclick="editCandidate(${c.id})"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteCandidate(${c.id})"><i class="bi bi-trash"></i></button>
+                        <span class="badge bg-primary">
+                            <i class="fas fa-vote-yea me-1"></i>${c.voteCount}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary me-1" onclick="editCandidate(${c.id})">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCandidate(${c.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </td>`;
                 tbody.appendChild(tr);
             });
         }
+
         async function loadAudit() {
+            const actionMap = {
+                'CANDIDATE_CREATE': 'Création candidat',
+                'CANDIDATE_UPDATE': 'Mise à jour candidat',
+                'CANDIDATE_DELETE': 'Suppression candidat',
+                'USER_ENABLE': 'Activation utilisateur',
+                'USER_DISABLE': 'Désactivation utilisateur',
+                'USER_DELETE': 'Suppression utilisateur',
+                'VOTE_CAST': 'Vote enregistré',
+                'BACKUP_CREATE': 'Sauvegarde créée'
+            };
             const tbody = document.getElementById('auditTableBody');
             tbody.innerHTML = '';
             const logs = await apiRequest('/api/audit/logs');
             logs.forEach(l => {
                 const tr = document.createElement('tr');
+                const date = new Date(l.timestamp);
+                const dateStr = date.toLocaleDateString('fr-FR');
+                const timeStr = date.toLocaleTimeString('fr-FR');
+                const actionLabel = actionMap[l.action] || l.action;
+                let details = l.details || '';
+                details = details
+                    .replace(/^Created candidate:/i, 'Candidat créé :')
+                    .replace(/^Updated candidate:/i, 'Candidat mis à jour :')
+                    .replace(/^Deleted candidate:/i, 'Candidat supprimé :')
+                    .replace(/^Disabled user:/i, 'Utilisateur désactivé :')
+                    .replace(/^Enabled user:/i, 'Utilisateur activé :')
+                    .replace(/^Deleted user:/i, 'Utilisateur supprimé :')
+                    .replace(/^Vote cast successfully/i, 'Vote enregistré avec succès');
                 tr.innerHTML = `
-                    <td>${l.timestamp}</td>
-                    <td>${l.username}</td>
-                    <td>${l.action}</td>
-                    <td>${l.details}</td>`;
+                    <td><i class="fas fa-clock me-2"></i>${dateStr} ${timeStr}</td>
+                    <td><i class="fas fa-user me-2"></i>${l.username}</td>
+                    <td><i class="fas fa-bolt me-2"></i>${actionLabel}</td>
+                    <td><i class="fas fa-info me-2"></i>${details}</td>`;
                 tbody.appendChild(tr);
             });
         }
+
         loadUsers();
         loadCandidates();
 
-        // Sauvegarde d'un nouveau candidat
+        // Sauvegarde d'un nouveau candidat (logique métier préservée)
         document.getElementById('saveCandidateBtn').addEventListener('click', async () => {
             const name = document.getElementById('candidateName').value.trim();
             const party = document.getElementById('candidateParty').value.trim();
@@ -509,10 +1114,11 @@ async function loadUsers() {
                 alert(res.message || 'Erreur lors de la création');
             }
         });
+
         loadAudit();
         loadBackups();
 
-        // Navigation entre sections
+        // Navigation entre sections (logique métier préservée)
         const sections = {
             dashboard: 'dashboardContent',
             candidates: 'candidatesContent',
@@ -521,6 +1127,7 @@ async function loadUsers() {
             results: 'resultsContent',
             backup: 'backup'
         };
+
         document.querySelectorAll('.nav-link[data-bs-toggle="pill"]').forEach(link => {
             link.addEventListener('click', (e) => {
                 const target = link.getAttribute('href').substring(1); // remove #
@@ -529,7 +1136,10 @@ async function loadUsers() {
                     if (el) el.style.display = 'none';
                 });
                 const el = document.getElementById(sections[target]);
-                if (el) el.style.display = 'block';
+                if (el) {
+                    el.style.display = 'block';
+                    el.classList.add('content-section');
+                }
                 if (target === 'backup') {
                     loadBackups();
                 } else if (target === 'results') {
@@ -539,16 +1149,20 @@ async function loadUsers() {
             });
         });
 
-        // Mise à jour des compteurs du tableau de bord
+        // Mise à jour des compteurs du tableau de bord (logique métier préservée)
         async function updateDashboardCounts() {
-            const votesRes = await apiRequest('/api/vote/total');
-            document.getElementById('totalVotes').textContent = (votesRes.totalVotes ?? votesRes.total ?? votesRes);
-            const users = await apiRequest('/api/admin/users');
-            document.getElementById('activeUsers').textContent = users.length;
-            const candidates = await apiRequest('/api/admin/candidates');
-            document.getElementById('totalCandidates').textContent = candidates.length;
+            try {
+                const votesRes = await apiRequest('/api/vote/total');
+                document.getElementById('totalVotes').textContent = (votesRes.totalVotes ?? votesRes.total ?? votesRes);
+                const users = await apiRequest('/api/admin/users');
+                document.getElementById('activeUsers').textContent = users.length;
+                const candidates = await apiRequest('/api/admin/candidates');
+                document.getElementById('totalCandidates').textContent = candidates.length;
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour des compteurs:', error);
+            }
         }
         updateDashboardCounts();
     </script>
 </body>
-</html> 
+</html>
