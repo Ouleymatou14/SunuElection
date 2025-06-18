@@ -35,12 +35,15 @@ class VoteServiceTest {
     @Mock
     private AuditService auditService;
 
+    @Mock
+    private EmailService emailService;
+
     private VoteService voteService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        voteService = new VoteService(voteRepository, userRepository, candidateRepository, cryptoService, auditService);
+        voteService = new VoteService(voteRepository, userRepository, candidateRepository, cryptoService, auditService, emailService);
         when(candidateRepository.findById(anyLong())).thenReturn(Optional.of(new Candidate()));
     }
 
@@ -64,6 +67,7 @@ class VoteServiceTest {
         verify(voteRepository).save(any(Vote.class));
         verify(userRepository).save(user);
         verify(auditService).logAction(eq(username), eq("VOTE_CAST"), anyString());
+        verify(emailService).send(eq(username), anyString(), anyString());
         assertTrue(user.isHasVoted());
     }
 

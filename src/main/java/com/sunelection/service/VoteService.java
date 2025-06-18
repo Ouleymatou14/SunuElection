@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import com.sunelection.service.EmailService;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,17 +24,20 @@ public class VoteService {
     private final CandidateRepository candidateRepository;
     private final JwtCryptoService cryptoService;
     private final AuditService auditService;
+    private final EmailService emailService;
 
     public VoteService(VoteRepository voteRepository,
                       UserRepository userRepository,
                       CandidateRepository candidateRepository,
                       JwtCryptoService cryptoService,
-                      AuditService auditService) {
+                      AuditService auditService,
+                      EmailService emailService) {
         this.voteRepository = voteRepository;
         this.userRepository = userRepository;
         this.candidateRepository = candidateRepository;
         this.cryptoService = cryptoService;
         this.auditService = auditService;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -125,6 +129,16 @@ public class VoteService {
 
         // Log the vote
         auditService.logAction(username, "VOTE_CAST", "Vote cast successfully");
+
+        // Send confirmation email
+        try {
+            String subject = "Confirmation de vote SunuElection";
+            String text = String.format("Bonjour %s,\n\nVotre vote en faveur de \"%s\" a bien été enregistré le %s.\n\nMerci de votre participation.\n--\nSunuElection", user.getFullName(), candidate.getName(), java.time.LocalDateTime.now());
+            emailService.send(user.getEmail(), subject, text);
+        } catch (Exception ex) {
+            // we log but do not fail the vote if email fails
+            System.out.println("[MAIL FAIL] " + ex.getMessage());
+        }
     }
 
     public long getTotalVotes() {

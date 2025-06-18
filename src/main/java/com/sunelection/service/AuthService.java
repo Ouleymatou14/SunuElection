@@ -14,6 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.sunelection.model.VerificationToken;
+import com.sunelection.repository.VerificationTokenRepository;
+import com.sunelection.service.EmailService;
+import org.springframework.beans.factory.annotation.Value;
+import java.time.Instant;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -21,15 +27,24 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final EmailService emailService;
+
+    @Value("${app.frontend.url:http://localhost:8080}")
+    private String frontendUrl;
 
     public AuthService(UserRepository userRepository, 
                       PasswordEncoder passwordEncoder,
                       JwtTokenProvider jwtTokenProvider,
-                      AuthenticationManager authenticationManager) {
+                      AuthenticationManager authenticationManager,
+                      VerificationTokenRepository verificationTokenRepository,
+                      EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
+        this.verificationTokenRepository = verificationTokenRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -38,7 +53,18 @@ public class AuthService {
             throw new RuntimeException("Email already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(false);
         userRepository.save(user);
+
+        String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = new VerificationToken(token, user, Instant.now().plusSeconds(86_400));
+        verificationTokenRepository.save(verificationToken);
+
+        String link = frontendUrl + "/api/activate.html?token=" + token;
+        emailService.send(user.getEmail(),
+                "Activation de votre compte SunuElection",
+                "Bonjour,\n\nMerci de votre inscription sur SunuElection. " +
+                        "Cliquez sur le lien suivant pour activer votre compte (valide 24h):\n" + link + "\n\n--\nSunuElection");
     }
 
     public Map<String, Object> login(String email, String password) {
@@ -49,6 +75,9 @@ public class AuthService {
         String token = jwtTokenProvider.generateToken(authentication);
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
+        if (!user.isEnabled()) {
+            throw new RuntimeException("Compte non activé");
+        }
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);

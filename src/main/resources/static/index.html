@@ -41,7 +41,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden; /* Changé de overflow-x: hidden à overflow: hidden */
+            overflow-x: hidden; /* Autorise le scroll vertical */
         }
 
         /* Background decorative elements */
@@ -546,7 +546,7 @@
                 const data = await res.json();
                 
                 if (res.ok) {
-                    showAlert('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success');
+                    showAlert('Inscription réussie ! Un email d\'activation vient d\'être envoyé.', 'success');
                     setTimeout(() => {
                         switchToLogin();
                     }, 2000);

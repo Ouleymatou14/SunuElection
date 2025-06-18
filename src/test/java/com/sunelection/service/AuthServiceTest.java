@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.AuthenticationManager;
+import com.sunelection.repository.VerificationTokenRepository;
+import com.sunelection.service.EmailService;
+import com.sunelection.model.VerificationToken;
+import java.time.Instant;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,12 +38,18 @@ class AuthServiceTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
+    @Mock
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @Mock
+    private EmailService emailService;
+
     private AuthService authService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        authService = new AuthService(userRepository, passwordEncoder, jwtTokenProvider, authenticationManager);
+        authService = new AuthService(userRepository, passwordEncoder, jwtTokenProvider, authenticationManager, verificationTokenRepository, emailService);
     }
 
     @Test
@@ -53,6 +63,7 @@ class AuthServiceTest {
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
+        when(verificationTokenRepository.save(any(VerificationToken.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
         authService.register(user);
@@ -61,6 +72,8 @@ class AuthServiceTest {
         verify(userRepository).existsByEmail(user.getEmail());
         verify(passwordEncoder).encode("password");
         verify(userRepository).save(any(User.class));
+        verify(verificationTokenRepository).save(any(VerificationToken.class));
+        verify(emailService).send(eq(user.getEmail()), anyString(), anyString());
     }
 
     @Test

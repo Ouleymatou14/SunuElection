@@ -70,6 +70,7 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
+                .antMatchers("/api/auth/activate","/api/auth/register","/activate.html","/index.html","/","/static/**","/css/**","/js/**").permitAll()
                 .antMatchers("/**").permitAll()
                 .anyRequest().permitAll()
             .and()
