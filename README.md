@@ -127,6 +127,17 @@ Accédez à l'interface d'administration à l'adresse :
 http://localhost:8080/api/admin.html
 ```
 
+### Pages de l'application
+
+| Page | URL par défaut | Description |
+|------|----------------|-------------|
+| `index.html` | `http://localhost:8080/api/index.html` | Page d'authentification (connexion / inscription) |
+| `activate.html` | `http://localhost:8080/api/activate.html?token=<token>` | Page d'activation de compte |
+| `home.html` | `http://localhost:8080/api/home.html` | Page d'accueil utilisateur |
+| `dashboard.html` | `http://localhost:8080/api/dashboard.html` | Page d'accueil administrateur |
+| `admin.html` | `http://localhost:8080/api/admin.html` | Interface d'administration |
+| `scrutateur.html` | `http://localhost:8080/api/scrutateur.html` | Interface de scrutateur |
+
 ## Sécurité
 
 ### Authentification
