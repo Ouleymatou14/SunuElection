@@ -124,7 +124,7 @@ Authorization: Bearer <token>
 ### Interface d'Administration
 Accédez à l'interface d'administration à l'adresse :
 ```
-http://localhost:8080/admin.html
+http://localhost:8080/api/admin.html
 ```
 
 ## Sécurité
