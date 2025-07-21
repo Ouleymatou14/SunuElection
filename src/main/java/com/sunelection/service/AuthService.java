@@ -125,7 +125,7 @@ public class AuthService {
         VerificationToken resetToken = verificationTokenRepository.findByToken(token)
             .orElseThrow(() -> new RuntimeException("Token invalide"));
         
-        if (resetToken.isExpired()) {
+        if (resetToken.getExpiresAt().isBefore(Instant.now())) {
             throw new RuntimeException("Token expiré");
         }
         
