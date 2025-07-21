@@ -133,7 +133,7 @@ public class VoteService {
         // Send confirmation email
         try {
             String subject = "Confirmation de vote SunuElection";
-            String text = String.format("Bonjour %s,\n\nVotre vote en faveur de \"%s\" a bien été enregistré le %s.\n\nMerci de votre participation.\n--\nSunuElection", user.getFullName(), candidate.getName(), java.time.LocalDateTime.now());
+            String text = String.format("Bonjour %s,\n\nVotre vote a bien été enregistré le %s.\n\nMerci de votre participation à cette élection.\n--\nSunuElection", user.getFullName(), java.time.LocalDateTime.now());
             emailService.send(user.getEmail(), subject, text);
         } catch (Exception ex) {
             // we log but do not fail the vote if email fails
