@@ -105,12 +105,41 @@ public class AuthService {
     public void resetPassword(String email) {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        // Générer un mot de passe temporaire sécurisé
-        String tempPassword = java.util.UUID.randomUUID().toString().substring(0, 12);
-        user.setPassword(passwordEncoder.encode(tempPassword));
-        userRepository.save(user);
-        // Envoyer le mot de passe temporaire par email (simulation)
-        System.out.println("Mot de passe temporaire pour " + email + " : " + tempPassword);
-        // En production, utiliser un service d'email pour envoyer le mot de passe
+        
+        // Générer un token de réinitialisation
+        String token = UUID.randomUUID().toString();
+        VerificationToken resetToken = new VerificationToken(token, user, Instant.now().plusSeconds(3600)); // 1 heure
+        verificationTokenRepository.save(resetToken);
+        
+        // Envoyer l'e-mail de réinitialisation
+        String resetLink = frontendUrl + "/api/reset-password.html?token=" + token;
+        emailService.send(user.getEmail(),
+                "Réinitialisation de votre mot de passe SunuElection",
+                "Bonjour,\n\nVous avez demandé la réinitialisation de votre mot de passe. " +
+                        "Cliquez sur le lien suivant pour définir un nouveau mot de passe (valide 1h):\n" + resetLink + "\n\n" +
+                        "Si vous n'avez pas demandé cette réinitialisation, ignorez cet e-mail.\n--\nSunuElection");
     }
-} 
+    
+    @Transactional
+    public void confirmPasswordReset(String token, String newPassword) {
+        VerificationToken resetToken = verificationTokenRepository.findByToken(token)
+            .orElseThrow(() -> new RuntimeException("Token invalide"));
+        
+        if (resetToken.isExpired()) {
+            throw new RuntimeException("Token expiré");
+        }
+        
+        if (resetToken.isUsed()) {
+            throw new RuntimeException("Token déjà utilisé");
+        }
+        
+        // Mettre à jour le mot de passe
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        
+        // Marquer le token comme utilisé
+        resetToken.setUsed(true);
+        verificationTokenRepository.save(resetToken);
+    }
+}

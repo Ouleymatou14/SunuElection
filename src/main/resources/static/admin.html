@@ -842,11 +842,6 @@
             redirectToDashboard(getRoles()[0] || 'USER');
         }
 
-        function logout() {
-            removeToken();
-            window.location.href = '/api/index.html';
-        }
-
         // ---- CRUD helpers (logique métier préservée) ----
         let candidateMap = {};
         let editingCandidateId = null;

@@ -576,8 +576,7 @@
 
         document.getElementById('logoutLink').addEventListener('click', (e) => {
             e.preventDefault();
-            removeToken();
-            window.location.href = '/api/index.html';
+            logout();
         });
 
         function showContent(content) {

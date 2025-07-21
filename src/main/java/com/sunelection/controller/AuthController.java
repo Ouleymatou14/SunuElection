@@ -143,6 +143,59 @@ public class AuthController {
     }
 
     /**
+     * Demande de réinitialisation de mot de passe.
+     *
+     * @param request Contient l'email de l'utilisateur
+     * @return Message de confirmation
+     */
+    @PostMapping("/forgot-password")
+    @Operation(
+        summary = "Demander la réinitialisation du mot de passe",
+        description = "Envoie un e-mail avec un lien de réinitialisation du mot de passe."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "E-mail de réinitialisation envoyé"),
+        @ApiResponse(responseCode = "404", description = "Utilisateur non trouvé")
+    })
+    public ResponseEntity<Map<String, String>> forgotPassword(
+            @Parameter(description = "Email de l'utilisateur", required = true)
+            @RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            authService.resetPassword(email);
+            return ResponseEntity.ok(Map.of("message", "E-mail de réinitialisation envoyé"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
+     * Confirme la réinitialisation du mot de passe avec le token.
+     *
+     * @param request Contient le token et le nouveau mot de passe
+     * @return Message de confirmation
+     */
+    @PostMapping("/confirm-reset-password")
+    @Operation(
+        summary = "Confirmer la réinitialisation du mot de passe",
+        description = "Définit un nouveau mot de passe avec le token de réinitialisation."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Mot de passe réinitialisé avec succès"),
+        @ApiResponse(responseCode = "400", description = "Token invalide ou expiré")
+    })
+    public ResponseEntity<Map<String, String>> confirmResetPassword(
+            @Parameter(description = "Token et nouveau mot de passe", required = true)
+            @RequestBody PasswordResetRequest request) {
+        try {
+            authService.confirmPasswordReset(request.getToken(), request.getNewPassword());
+            return ResponseEntity.ok(Map.of("message", "Mot de passe réinitialisé avec succès"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
      * Classe interne pour la requête de connexion.
      */
     @Schema(description = "Requête de connexion")
@@ -188,9 +241,36 @@ public class AuthController {
     }
 
     /**
-     * Classe interne pour la requête de changement de mot de passe.
+     * Classe pour encapsuler les données de réinitialisation de mot de passe.
      */
-    @Schema(description = "Requête de changement de mot de passe")
+    @Schema(description = "Requête de réinitialisation de mot de passe avec token")
+    public static class PasswordResetRequest {
+        @Schema(description = "Token de réinitialisation", required = true)
+        private String token;
+        
+        @Schema(description = "Nouveau mot de passe", required = true)
+        private String newPassword;
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getNewPassword() {
+            return newPassword;
+        }
+
+        public void setNewPassword(String newPassword) {
+            this.newPassword = newPassword;
+        }
+    }
+
+    /**
+     * Classe pour encapsuler les données de changement de mot de passe.
+     */
     public static class ChangePasswordRequest {
         @Schema(description = "Ancien mot de passe", required = true)
         private String oldPassword;

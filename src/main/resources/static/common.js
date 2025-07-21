@@ -96,4 +96,15 @@ function redirectToDashboard(role) {
     } else {
         window.location.href = '/api/dashboard.html';
     }
+}
+
+// Fonction de déconnexion globale
+function logout() {
+    // Supprimer le token et les données de session
+    removeToken();
+    localStorage.removeItem('rolesJSON');
+    localStorage.clear();
+    
+    // Rediriger vers la page d'accueil
+    window.location.href = '/api/home.html';
 } 

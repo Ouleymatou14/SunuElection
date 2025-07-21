@@ -562,11 +562,6 @@
             redirectToDashboard(getRoles()[0] || 'USER');
         }
 
-        function logout() {
-            removeToken();
-            window.location.href = '/api/index.html';
-        }
-
         // Chargement des résultats (logique métier préservée avec amélioration visuelle)
         async function loadResults() {
             const container = document.getElementById('resultsContainer');
